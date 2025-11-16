@@ -17,7 +17,9 @@
 ## API Layer
 - [x] Create `OrderController`
 - [x] Create `PaymentController` (Handle `Idempotency-Key` header)
+- [x] Global Exception Handling (`@ControllerAdvice`)
 
 ## Verification
+- [x] Manual Verification (Curl)
 - [ ] Unit Test: State Transitions
-- [ ] Integration Test: Concurrent Payments
+- [x] Integration Test: Concurrent Payments (Shell Script)

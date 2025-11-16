@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.example.transactional.exception.BusinessException;
 import com.example.transactional.model.Order;
 import com.example.transactional.model.OrderStatus;
 import com.example.transactional.model.Payment;
@@ -33,15 +34,15 @@ public class PaymentService {
         // INTERVIEW TIP: Usuallly we'd return the saved payment, but for simplicity we will check existence
 
         if (paymentRepository.findByIdempotencyKey(idempotencyKey).isPresent()){
-            throw new RuntimeException("Payment already processed (Idempotennt Request");
+            throw new BusinessException("Payment already processed (Idempotennt Request");
         }
         // 2. Pessimistic Lock 
         // this line STOPS other threads here
-        Order order = orderRepository.findByIdWithLock(orderId).orElseThrow(()-> new RuntimeException("Order not found"));
+        Order order = orderRepository.findByIdWithLock(orderId).orElseThrow(()-> new BusinessException("Order not found"));
 
         // 3. Validation (Business Logic)
         if (order.getStatus()!=OrderStatus.CREATED){
-            throw new RuntimeException("Order cannot be paid. Current status: "+ order.getStatus());
+            throw new BusinessException("Order cannot be paid. Current status: "+ order.getStatus());
         }
 
         // 4. Create payment (The action)
